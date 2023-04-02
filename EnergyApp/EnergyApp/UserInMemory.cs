@@ -2,7 +2,9 @@
 {
     public class UserInMemory : UserBase
     {
-        //public override event UsageAddedDelegate UsageAdded;
+        public override event UsageAddedDelegate UsageAdded;
+
+        public override event DaysAddedDelegate DaysAdded;
 
         public float invoiceCountAsFloat = 0;
 
@@ -10,13 +12,17 @@
 
         public float daysListSum = 0;
 
+        public int minDayUsageInvoiceNumber = 0;
+
+        public int maxDayUsageInvoiceNumber = 0;
+
         private List<float> usageList = new List<float>();
 
         private List<float> daysList = new List<float>();
 
-        private List<float> dayUsageList = new List<float>();
+        public List<float> dayUsageList = new List<float>();
 
-
+        public object statistics { get; set; }
 
         public UserInMemory(string userId)
             : base(userId)
@@ -44,10 +50,10 @@
                 this.usageList.Add(usage);
                 usageListSum += usage;
 
-                //if (UsageAdded != null)
-                //{
-                //    UsageAdded(this, new EventArgs());
-                //}
+                if (UsageAdded != null)
+                {
+                    UsageAdded(this, new EventArgs());
+                }
             }
             else
             {
@@ -86,10 +92,10 @@
                 this.daysList.Add(days);
                 daysListSum += days;
 
-                //if (UsageAdded != null)
-                //{
-                //    UsageAdded(this, new EventArgs());
-                //}
+                if (DaysAdded != null)
+                {
+                    DaysAdded(this, new EventArgs());
+                }
             }
             else
             {
@@ -137,6 +143,8 @@
             foreach (var dayUsage in this.dayUsageList)
             {
                 statistics.AddDayUsage(dayUsage);
+                this.minDayUsageInvoiceNumber = dayUsageList.IndexOf(statistics.Min) + 1;
+                this.maxDayUsageInvoiceNumber = dayUsageList.IndexOf(statistics.Max) + 1;
             }
             return statistics;
         }

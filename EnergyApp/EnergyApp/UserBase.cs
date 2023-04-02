@@ -2,9 +2,13 @@
 {
     public abstract class UserBase : IUser
     {
-        //public delegate void UsageAddedDelegate(object sender, EventArgs args);
+        public delegate void UsageAddedDelegate(object sender, EventArgs args);
 
-        //public abstract event UsageAddedDelegate UsageAdded;
+        public abstract event UsageAddedDelegate UsageAdded;
+
+        public delegate void DaysAddedDelegate(object sender, EventArgs args);
+
+        public abstract event DaysAddedDelegate DaysAdded;
 
         public UserBase(string userId)
         {

@@ -28,6 +28,10 @@
 
         //event UsageAddedDelegate UsageAdded;
 
+        //delegate void DaysAddedDelegate(object sender, EventArgs args);
+
+        //event DaysAddedDelegate DaysAdded;
+
         Statistics GetStatistics();
     }
 }
