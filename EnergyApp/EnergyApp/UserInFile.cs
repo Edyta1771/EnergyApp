@@ -140,7 +140,7 @@
         {
             var usageList = new List<float>();
             var daysList = new List<float>();
-            //var dayUsageList = new List<float>();
+            //var dayUsageList = new List<float>(); została wyciągnięta poza metodę aby skorzystac z niej w testach
 
             if (File.Exists(fileNameUsage))
             {
