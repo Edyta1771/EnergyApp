@@ -4,6 +4,18 @@
     {
         string UserId { get; }
 
+        float InvoiceCountAsFloat { get; }
+
+        //float UsageListSum { get;}
+
+        //float DaysListSum { get; }
+
+        //int MinDayUsageInvoiceNumber { get; }
+
+        //int MaxDayUsageInvoiceNumber { get;}
+
+        //float AverageDailyUsage { get; }
+
         float InvoiceCount(string invoiceCount);
 
         void AddUsage(float usage);
@@ -23,14 +35,6 @@
         void AddDays(double days);
 
         void AddDayUsage();
-
-        //delegate void UsageAddedDelegate(object sender, EventArgs args);
-
-        //event UsageAddedDelegate UsageAdded;
-
-        //delegate void DaysAddedDelegate(object sender, EventArgs args);
-
-        //event DaysAddedDelegate DaysAdded;
 
         Statistics GetStatistics();
     }

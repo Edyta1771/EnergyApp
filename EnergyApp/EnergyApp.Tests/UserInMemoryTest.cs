@@ -3,24 +3,6 @@ namespace EnergyApp.Tests
     public class Tests1
     {
         [Test]
-        public void AverageUsageCalculationCheck()
-        {
-            //arrange
-            float usage1 = 100;
-            float usage2 = 200;
-            int days1 = 10;
-            int days2 = 50;
-
-            //act
-            var usageSum = usage1 + usage2;
-            var daysSum = days1 + days2;
-            var averageUsage = usageSum / daysSum;
-
-            //assert
-            Assert.AreEqual(5, averageUsage);
-        }
-
-        [Test]
         public void AddUsageMethodCheckInMemory()
         {
             //arrange
@@ -30,8 +12,8 @@ namespace EnergyApp.Tests
             user.AddUsage(240);
 
             //act
-            var result = user.usageListSum;
-
+            var result = user.UsageList.Sum();
+            
             //assert
             Assert.AreEqual(540, result);
         }
@@ -46,7 +28,7 @@ namespace EnergyApp.Tests
             user.AddDays(40);
 
             //act
-            var result = user.daysListSum;
+            var result = user.DaysList.Sum();
 
             //assert
             Assert.AreEqual(100, result);
@@ -57,7 +39,6 @@ namespace EnergyApp.Tests
         {
             //arrange
             var user = new UserInMemory("EdytaM");
-            user.invoiceCountAsFloat = 3;
             user.AddUsage(100);
             user.AddUsage(200);
             user.AddUsage(240);
@@ -67,9 +48,9 @@ namespace EnergyApp.Tests
             user.AddDayUsage();
 
             //act
-            var result1 = user.dayUsageList[0];
-            var result2 = user.dayUsageList[1];
-            var result3 = user.dayUsageList[2];
+            var result1 = user.DayUsageList[0];
+            var result2 = user.DayUsageList[1];
+            var result3 = user.DayUsageList[2];
 
             //assert
             Assert.AreEqual(10, result1);
@@ -82,7 +63,6 @@ namespace EnergyApp.Tests
         {
             //arrange
             var user = new UserInMemory("EdytaM");
-            user.invoiceCountAsFloat = 3;
             user.AddUsage(100);
             user.AddUsage(200);
             user.AddUsage(240);
@@ -93,8 +73,8 @@ namespace EnergyApp.Tests
            
             //act
             var result = user.GetStatistics();
-            var result1 = user.minDayUsageInvoiceNumber;
-            var result2 = user.maxDayUsageInvoiceNumber;
+            var result1 = user.MinDayUsageInvoiceNumber;
+            var result2 = user.MaxDayUsageInvoiceNumber;
 
             //assert
             Assert.AreEqual(4, result.Min);

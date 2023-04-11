@@ -25,10 +25,5 @@
             this.Min = Math.Min(dayUsage, this.Min);
             this.Max = Math.Max(dayUsage, this.Max);
         }
-
-        //public void AddDayUsage(List<float> dayUsageList)
-        //{
-        //    throw new NotImplementedException();
-        //}
     }
 }

@@ -13,7 +13,7 @@
             user.AddUsage(240);
 
             //act
-            var result = user.usageListSum;
+            var result = user.UsageList.Sum();
 
             //assert
             Assert.AreEqual(540, result);
@@ -29,7 +29,7 @@
             user.AddDays(40);
 
             //act
-            var result = user.daysListSum;
+            var result = user.DaysList.Sum();
 
             //assert
             Assert.AreEqual(100, result);
@@ -40,7 +40,7 @@
         {
             //arrange
             var user = new UserInFile("EdytaM");
-            user.invoiceCountAsFloat = 3;
+            //user.InvoiceCountAsFloat = 3;
             user.AddUsage(100);
             user.AddUsage(200);
             user.AddUsage(240);
@@ -50,9 +50,9 @@
             user.AddDayUsage();
 
             //act
-            var result1 = user.dayUsageList[0];
-            var result2 = user.dayUsageList[1];
-            var result3 = user.dayUsageList[2];
+            var result1 = user.DayUsageList[0];
+            var result2 = user.DayUsageList[1];
+            var result3 = user.DayUsageList[2];
 
             //assert
             Assert.AreEqual(10, result1);
@@ -65,7 +65,7 @@
         {
             //arrange
             var user = new UserInFile("EdytaM");
-            user.invoiceCountAsFloat = 3;
+            //user.usageList.Count = 3;
             user.AddUsage(100);
             user.AddUsage(200);
             user.AddUsage(240);
@@ -76,8 +76,8 @@
 
             //act
             var result = user.GetStatistics();
-            var result1 = user.minDayUsageInvoiceNumber;
-            var result2 = user.maxDayUsageInvoiceNumber;
+            var result1 = user.MinDayUsageInvoiceNumber;
+            var result2 = user.MaxDayUsageInvoiceNumber;
 
             //assert
             Assert.AreEqual(4, result.Min);

@@ -6,49 +6,36 @@
 
         public override event DaysAddedDelegate DaysAdded;
 
-        public float invoiceCountAsFloat = 0;
+        public float UsageListSum { get; private set; }
 
-        public float usageListSum = 0;
+        public float DaysListSum { get; private set; }
 
-        public float daysListSum = 0;
+        public float AverageDailyUsage { get; private set; }
 
-        public int minDayUsageInvoiceNumber = 0;
+        public int MinDayUsageInvoiceNumber { get; private set; }
 
-        public int maxDayUsageInvoiceNumber = 0;
+        public int MaxDayUsageInvoiceNumber { get; private set; }
 
-        private List<float> usageList = new List<float>();
+        public List<float> UsageList { get; private set; } = new List<float>();
 
-        private List<float> daysList = new List<float>();
+        public List<float> DaysList { get; private set; } = new List<float>();
 
-        public List<float> dayUsageList = new List<float>();
-
-        public object statistics { get; set; }
+        public List<float> DayUsageList { get; private set; } = new List<float>();
 
         public UserInMemory(string userId)
             : base(userId)
         {
-        }
-
-        public override float InvoiceCount(string invoiceCount)
-        {
-            if (float.TryParse(invoiceCount, out float result) && result >= 1 && result <= 12)
-            {
-                Console.WriteLine("Thank you");
-                this.invoiceCountAsFloat += result;
-            }
-            else
-            {
-                throw new Exception("Wrong number given, please try again");
-            }
-            return result;
+            this.UsageListSum = 0;
+            this.DaysListSum = 0;
+            this.MinDayUsageInvoiceNumber = 0;
+            this.MaxDayUsageInvoiceNumber = 0;
         }
 
         public override void AddUsage(float usage)
         {
             if (usage >= 0)
             {
-                this.usageList.Add(usage);
-                usageListSum += usage;
+                this.UsageList.Add(usage);
 
                 if (UsageAdded != null)
                 {
@@ -89,8 +76,7 @@
         {
             if (days >= 0)
             {
-                this.daysList.Add(days);
-                daysListSum += days;
+                this.DaysList.Add(days);
 
                 if (DaysAdded != null)
                 {
@@ -129,22 +115,26 @@
 
         public override void AddDayUsage()
         {
-            for (int i = 0; i < invoiceCountAsFloat; i++)
+            for (int i = 0; i < UsageList.Count; i++)
             {
-                var dayUsage = this.usageList[i] / this.daysList[i];
-                this.dayUsageList.Add(dayUsage);
+                var dayUsage = this.UsageList[i] / this.DaysList[i];
+                this.DayUsageList.Add(dayUsage);
             }
         }
-
+        
         public override Statistics GetStatistics()
         {
             var statistics = new Statistics();
 
-            foreach (var dayUsage in this.dayUsageList)
+            UsageListSum += UsageList.Sum();
+            DaysListSum += DaysList.Sum();
+            AverageDailyUsage = UsageListSum / DaysListSum;
+
+            foreach (var dayUsage in this.DayUsageList)
             {
                 statistics.AddDayUsage(dayUsage);
-                this.minDayUsageInvoiceNumber = dayUsageList.IndexOf(statistics.Min) + 1;
-                this.maxDayUsageInvoiceNumber = dayUsageList.IndexOf(statistics.Max) + 1;
+                MinDayUsageInvoiceNumber += DayUsageList.IndexOf(statistics.Min) + 1;
+                MaxDayUsageInvoiceNumber += DayUsageList.IndexOf(statistics.Max) + 1;
             }
             return statistics;
         }

@@ -10,14 +10,39 @@
 
         public abstract event DaysAddedDelegate DaysAdded;
 
+        public string UserId { get; private set; }
+
+        public float InvoiceCountAsFloat { get; private set; }
+
+        //public float UsageListSum { get; private set; }
+
+        //public float DaysListSum { get; private set; }
+
+        //public float AverageDailyUsage { get; private set; }
+
+        //public int MinDayUsageInvoiceNumber { get; private set; }
+
+        //public int MaxDayUsageInvoiceNumber { get; private set; }
+
         public UserBase(string userId)
         {
             this.UserId = userId;
+            this.InvoiceCountAsFloat = 0;
         }
 
-        public string UserId { get; private set; }
-
-        public abstract float InvoiceCount(string invoiceCount);
+        public float InvoiceCount(string invoiceCount)
+        {
+            if (float.TryParse(invoiceCount, out float result) && result >= 1 && result <= 12)
+            {
+                Console.WriteLine("Thank you");
+                this.InvoiceCountAsFloat += result;
+            }
+            else
+            {
+                throw new Exception("Wrong number given, please try again");
+            }
+            return result;
+        }
 
         public abstract void AddUsage(float usage);
 

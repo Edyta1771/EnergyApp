@@ -6,15 +6,15 @@
 
         public override event DaysAddedDelegate DaysAdded;
 
-        public float invoiceCountAsFloat = 0;
+        public float UsageListSum { get; private set; }
 
-        public float usageListSum = 0;
+        public float DaysListSum { get; private set; }
 
-        public float daysListSum = 0;
+        public float AverageDailyUsage { get; private set; }
 
-        public int minDayUsageInvoiceNumber = 0;
+        public int MinDayUsageInvoiceNumber { get; private set; }
 
-        public int maxDayUsageInvoiceNumber = 0;
+        public int MaxDayUsageInvoiceNumber { get; private set; }
 
         private const string fileNameUsage = "usage.txt";
 
@@ -22,7 +22,11 @@
 
         private const string fileNameDayUsage = "dayusage.txt";
 
-        public List<float> dayUsageList = new List<float>();
+        public List<float> UsageList { get; private set; } = new List<float>();
+        
+        public List<float> DaysList { get; private set; } = new List<float>();
+        
+        public List<float> DayUsageList { get; private set; } = new List<float>();
 
         public UserInFile(string userId)
             : base(userId)
@@ -30,20 +34,10 @@
             File.Delete(fileNameUsage);
             File.Delete(fileNameDays);
             File.Delete(fileNameDayUsage);
-        }
-
-        public override float InvoiceCount(string invoiceCount)
-        {
-            if (float.TryParse(invoiceCount, out float result) && result >= 1 && result <= 12)
-            {
-                Console.WriteLine("Thank you");
-                this.invoiceCountAsFloat += result;
-            }
-            else
-            {
-                throw new Exception("Wrong number given, please try again");
-            }
-            return result;
+            this.UsageListSum = 0;
+            this.DaysListSum = 0;
+            this.MinDayUsageInvoiceNumber = 0;
+            this.MaxDayUsageInvoiceNumber = 0;
         }
 
         public override void AddUsage(float usage)
@@ -54,7 +48,6 @@
                 {
                     writer.WriteLine(usage);
                 }
-                usageListSum += usage;
 
                 if (UsageAdded != null)
                 {
@@ -99,7 +92,6 @@
                 {
                     writer.WriteLine(days);
                 }
-                daysListSum += days;
 
                 if (DaysAdded != null)
                 {
@@ -138,10 +130,7 @@
 
         public override void AddDayUsage()
         {
-            var usageList = new List<float>();
-            var daysList = new List<float>();
-            //var dayUsageList = new List<float>(); została wyciągnięta poza metodę aby skorzystac z niej w testach
-
+            
             if (File.Exists(fileNameUsage))
             {
                 using (var reader = File.OpenText(fileNameUsage))
@@ -152,7 +141,7 @@
                         float.TryParse(line, out float number);
                         if (number > 0)
                         {
-                            usageList.Add(number);
+                            UsageList.Add(number);
                         }
                         line = reader.ReadLine();
                     }
@@ -173,7 +162,7 @@
                         float.TryParse(line, out float number);
                         if (number > 0)
                         {
-                            daysList.Add(number);
+                            DaysList.Add(number);
                         }
                         line = reader.ReadLine();
                     }
@@ -184,10 +173,10 @@
                 throw new Exception($"File {fileNameDays} doesn't exist");
             }
 
-            for (int i = 0; i < usageList.Count; i++)
+            for (int i = 0; i < UsageList.Count; i++)
             {
-                var dayUsage = usageList[i] / daysList[i];
-                this.dayUsageList.Add(dayUsage);
+                var dayUsage = UsageList[i] / DaysList[i];
+                this.DayUsageList.Add(dayUsage);
 
 
                 if (dayUsage >= 0)
@@ -202,8 +191,6 @@
 
         public override Statistics GetStatistics()
         {
-            var dayUsageList = new List<float>();
-
             if (File.Exists(fileNameDayUsage))
             {
                 using (var reader = File.OpenText(fileNameDayUsage))
@@ -214,7 +201,7 @@
                         float.TryParse(line, out float number);
                         if (number > 0)
                         {
-                            dayUsageList.Add(number);
+                            DayUsageList.Add(number);
                         }
                         line = reader.ReadLine();
                     }
@@ -227,11 +214,15 @@
 
             var statistics = new Statistics();
 
-            foreach (var dayUsage in dayUsageList)
+            UsageListSum += UsageList.Sum();
+            DaysListSum += DaysList.Sum();
+            AverageDailyUsage = UsageListSum / DaysListSum;
+
+            foreach (var dayUsage in DayUsageList)
             {
                 statistics.AddDayUsage(dayUsage);
-                this.minDayUsageInvoiceNumber = dayUsageList.IndexOf(statistics.Min) + 1;
-                this.maxDayUsageInvoiceNumber = dayUsageList.IndexOf(statistics.Max) + 1;
+                MinDayUsageInvoiceNumber += DayUsageList.IndexOf(statistics.Min) + 1;
+                MaxDayUsageInvoiceNumber += DayUsageList.IndexOf(statistics.Max) + 1;
             }
             return statistics;           
         }

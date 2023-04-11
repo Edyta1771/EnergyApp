@@ -60,7 +60,7 @@ void UserDaysAdded(object sender, EventArgs args)
 }
 
 
-for (int i = 0; i < user.invoiceCountAsFloat; i++)
+for (int i = 0; i < user.InvoiceCountAsFloat; i++)
 {
     var index = i + 1;
     Console.Write($"\nPrepare invoice number {index} ");
@@ -106,19 +106,17 @@ for (int i = 0; i < user.invoiceCountAsFloat; i++)
 
 user.AddDayUsage();
 
-var averageDailyUsage = user.usageListSum / user.daysListSum;
-
 var statistics = user.GetStatistics();
 
 Console.WriteLine("\n===============================================================");
 Console.WriteLine();
 Console.WriteLine($"Energy usage statistics for the user: {user.UserId}\n");
-Console.WriteLine($"Number of invoices analyzed: {user.invoiceCountAsFloat}");
-Console.WriteLine($"Overall usage for all invoices: {user.usageListSum:N2} kWh");
-Console.WriteLine($"Number of days covered by all invoices: {user.daysListSum}");
-Console.WriteLine($"Average daily usage for all invoices: {averageDailyUsage:N2} kWh");
-Console.WriteLine($"Min daily usage recorded for the invoice number {user.minDayUsageInvoiceNumber}: {statistics.Min:N2} kWh");
-Console.WriteLine($"Max daily usage recorded for the invoice number {user.maxDayUsageInvoiceNumber}: {statistics.Max:N2} kWh\n");
+Console.WriteLine($"Number of invoices analyzed: {user.InvoiceCountAsFloat}");
+Console.WriteLine($"Overall usage for all invoices: {user.UsageListSum:N2} kWh");
+Console.WriteLine($"Number of days covered by all invoices: {user.DaysListSum}");
+Console.WriteLine($"Average daily usage for all invoices: {user.AverageDailyUsage:N2} kWh");
+Console.WriteLine($"Min daily usage recorded for the invoice number {user.MinDayUsageInvoiceNumber}: {statistics.Min:N2} kWh");
+Console.WriteLine($"Max daily usage recorded for the invoice number {user.MaxDayUsageInvoiceNumber}: {statistics.Max:N2} kWh\n");
 Console.WriteLine();
 Console.WriteLine($"How would you rate the ENERGYAPP program on the scale of 1 to 5 ?");
 string score = Console.ReadLine();
