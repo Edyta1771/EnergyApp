@@ -14,20 +14,30 @@
 
         public float InvoiceCountAsFloat { get; private set; }
 
-        //public float UsageListSum { get; private set; }
+        public float UsageListSum { get; protected set; }
 
-        //public float DaysListSum { get; private set; }
+        public float DaysListSum { get; protected set; }
 
-        //public float AverageDailyUsage { get; private set; }
+        public float AverageDailyUsage { get; protected set; }
 
-        //public int MinDayUsageInvoiceNumber { get; private set; }
+        public int MinDayUsageInvoiceNumber { get; protected set; }
 
-        //public int MaxDayUsageInvoiceNumber { get; private set; }
+        public int MaxDayUsageInvoiceNumber { get; protected set; }
+
+        public List<float> UsageList { get; protected set; } = new List<float>();
+
+        public List<float> DaysList { get; protected set; } = new List<float>();
+
+        public List<float> DayUsageList { get; protected set; } = new List<float>();
 
         public UserBase(string userId)
         {
             this.UserId = userId;
             this.InvoiceCountAsFloat = 0;
+            this.UsageListSum = 0;
+            this.DaysListSum = 0;
+            this.MinDayUsageInvoiceNumber = 0;
+            this.MaxDayUsageInvoiceNumber = 0;
         }
 
         public float InvoiceCount(string invoiceCount)

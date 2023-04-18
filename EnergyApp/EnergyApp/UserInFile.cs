@@ -6,27 +6,11 @@
 
         public override event DaysAddedDelegate DaysAdded;
 
-        public float UsageListSum { get; private set; }
-
-        public float DaysListSum { get; private set; }
-
-        public float AverageDailyUsage { get; private set; }
-
-        public int MinDayUsageInvoiceNumber { get; private set; }
-
-        public int MaxDayUsageInvoiceNumber { get; private set; }
-
         private const string fileNameUsage = "usage.txt";
 
         private const string fileNameDays = "days.txt";
 
         private const string fileNameDayUsage = "dayusage.txt";
-
-        public List<float> UsageList { get; private set; } = new List<float>();
-        
-        public List<float> DaysList { get; private set; } = new List<float>();
-        
-        public List<float> DayUsageList { get; private set; } = new List<float>();
 
         public UserInFile(string userId)
             : base(userId)
@@ -34,10 +18,6 @@
             File.Delete(fileNameUsage);
             File.Delete(fileNameDays);
             File.Delete(fileNameDayUsage);
-            this.UsageListSum = 0;
-            this.DaysListSum = 0;
-            this.MinDayUsageInvoiceNumber = 0;
-            this.MaxDayUsageInvoiceNumber = 0;
         }
 
         public override void AddUsage(float usage)
@@ -221,10 +201,10 @@
             foreach (var dayUsage in DayUsageList)
             {
                 statistics.AddDayUsage(dayUsage);
-                MinDayUsageInvoiceNumber += DayUsageList.IndexOf(statistics.Min) + 1;
-                MaxDayUsageInvoiceNumber += DayUsageList.IndexOf(statistics.Max) + 1;
+                MinDayUsageInvoiceNumber = DayUsageList.IndexOf(statistics.Min) +1;
+                MaxDayUsageInvoiceNumber = DayUsageList.IndexOf(statistics.Max) +1;
             }
-            return statistics;           
+            return statistics;
         }
     }
 }

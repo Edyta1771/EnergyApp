@@ -6,15 +6,21 @@
 
         float InvoiceCountAsFloat { get; }
 
-        //float UsageListSum { get;}
+        float UsageListSum { get; }
 
-        //float DaysListSum { get; }
+        float DaysListSum { get; }
 
-        //int MinDayUsageInvoiceNumber { get; }
+        int MinDayUsageInvoiceNumber { get; }
 
-        //int MaxDayUsageInvoiceNumber { get;}
+        int MaxDayUsageInvoiceNumber { get; }
 
-        //float AverageDailyUsage { get; }
+        float AverageDailyUsage { get; }
+
+        List<float> UsageList { get; }
+
+        List<float> DaysList { get; }
+
+        List<float> DayUsageList { get; }
 
         float InvoiceCount(string invoiceCount);
 
