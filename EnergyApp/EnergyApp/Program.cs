@@ -1,80 +1,113 @@
 ﻿using EnergyApp;
 
-Console.WriteLine("\nWelcome to the ENERGYAPP program for home energy consumption analysis");
-Console.WriteLine("=====================================================================\n");
+Console.WriteLine("\nWelcome to the ENERGYAPP program for home energy usage analysis");
+Console.WriteLine("===============================================================\n");
 
-string userId;
+Console.WriteLine("How would you like to store your energy readings from invoices?\n" +
+                  "Press M or m - to store in the program memory \n" +
+                  "Press F or f - to store in .txt file \n" +
+                  "Press X or x = to exit the program \n");
 
 while (true)
 {
-    Console.Write("Please enter User ID: ");
-    userId = Console.ReadLine();
-    if (!string.IsNullOrEmpty(userId) && !userId.StartsWith(" "))
+    string input = Console.ReadLine().ToUpper();
+
+    switch (input)
     {
-        Console.WriteLine("Thank you");
-        break;
+        case "M":
+            Console.WriteLine("The data will be temporarily stored in the program memory");
+            StoreReadingsInMemory();
+            break;
+        case "F":
+            Console.WriteLine("The data will be stored in the .txt file");
+            StoreReadingsInFile();
+            break;
+        case "X":
+            Console.WriteLine("Good bye, press any key to finish the program\n");
+            break;
+        default:
+            Console.WriteLine("Invalid key entry, please try again\n");
+            continue;
     }
-    else
-    {
-        Console.WriteLine("Invalid entry, please try again");
-    }
+    break;
 }
 
-var user = new UserInFile(userId);
-
-Console.WriteLine($"Please enter the energy consumption readings from the invoices for the user: {user.UserId} \n");
-Console.WriteLine("Please state how many invoices will be analyzed \n" +
-                  "(The number should be in the range 1 - 12) \n");
-
-while (true)
+static void StoreReadingsInMemory()
 {
-    Console.Write("The number of invoices is: ");
-    var invoiceCount = Console.ReadLine();
+    string userId;
 
-    try
+    while (true)
     {
-        if (invoiceCount != null)
+        Console.Write("Please enter your User ID: ");
+        userId = Console.ReadLine();
+        if (!string.IsNullOrEmpty(userId) && !userId.StartsWith(" "))
         {
-            user.InvoiceCount(invoiceCount);
             break;
         }
+        else
+        {
+            Console.WriteLine("Invalid entry, please try again");
+        }
     }
-    catch (Exception e)
-    {
-        Console.WriteLine($"Exception cought: {e.Message}");
-    }
+
+    var inMemoryUser = new UserInMemory(userId);
+    inMemoryUser.UsageAdded += UserUsageAdded;
+    inMemoryUser.DaysAdded += UserDaysAdded;
+    InvoiceDataEntry(inMemoryUser);
+    inMemoryUser.AddDayUsage();
+    StatisticsPresentation(inMemoryUser);
 }
 
+static void StoreReadingsInFile()
+{
+    string userId;
 
-user.UsageAdded += UserUsageAdded;
-user.DaysAdded += UserDaysAdded;
+    while (true)
+    {
+        Console.Write("Please enter your User ID: ");
+        userId = Console.ReadLine();
+        if (!string.IsNullOrEmpty(userId) && !userId.StartsWith(" "))
+        {
+            break;
+        }
+        else
+        {
+            Console.WriteLine("Invalid entry, please try again");
+        }
+    }
+    var inFileUser = new UserInFile(userId);
+    inFileUser.UsageAdded += UserUsageAdded;
+    inFileUser.DaysAdded += UserDaysAdded;
+    InvoiceDataEntry(inFileUser);
+    inFileUser.AddDayUsage();
+    StatisticsPresentation(inFileUser);
+}
 
-void UserUsageAdded(object sender, EventArgs args)
+static void UserUsageAdded(object sender, EventArgs args)
 {
     Console.WriteLine("New energy usage added");
 }
 
-void UserDaysAdded(object sender, EventArgs args)
+static void UserDaysAdded(object sender, EventArgs args)
 {
     Console.WriteLine("New invoice days added");
 }
 
-
-for (int i = 0; i < user.InvoiceCountAsFloat; i++)
+static void InvoiceDataEntry(UserBase user)
 {
-    var index = i + 1;
-    Console.Write($"\nPrepare invoice number {index} ");
+    Console.WriteLine("\nPlease type how many invoices will be analyzed \n" +
+                      "(The number should be in the range 1 - 12) \n");
 
     while (true)
     {
-        Console.Write("\nPlease enter the amount of energy used in kWh: ");
-        var usage = Console.ReadLine();
+        Console.Write("The number of invoices is: ");
+        var invoiceCount = Console.ReadLine();
 
         try
         {
-            if (usage != null)
+            if (invoiceCount != null)
             {
-                user.AddUsage(usage);
+                user.InvoiceCount(invoiceCount);
                 break;
             }
         }
@@ -84,55 +117,66 @@ for (int i = 0; i < user.InvoiceCountAsFloat; i++)
         }
     }
 
-    while (true)
+    for (int i = 0; i < user.InvoiceCountAsFloat; i++)
     {
-        Console.Write("Please enter the amount of days covered by this invoice: ");
-        var days = Console.ReadLine();
+        var index = i + 1;
+        Console.Write($"\nPrepare invoice number {index} ");
 
-        try
+        while (true)
         {
-            if (days != null)
+            Console.Write("\nPlease enter the amount of energy used in kWh: ");
+            var usage = Console.ReadLine();
+
+            try
             {
-                user.AddDays(days);
-                break;
+                if (usage != null)
+                {
+                    user.AddUsage(usage);
+                    break;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Exception cought: {e.Message}");
             }
         }
-        catch (Exception e)
+
+        while (true)
         {
-            Console.WriteLine($"Exception cought: {e.Message}");
+            Console.Write("Please enter the amount of days covered by this invoice: ");
+            var days = Console.ReadLine();
+
+            try
+            {
+                if (days != null)
+                {
+                    user.AddDays(days);
+                    break;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Exception cought: {e.Message}");
+            }
         }
     }
 }
 
-user.AddDayUsage();
+static void StatisticsPresentation(UserBase user)
+{
 
-var statistics = user.GetStatistics();
+    var statistics = user.GetStatistics();
 
-Console.WriteLine("\n===============================================================");
-Console.WriteLine();
-Console.WriteLine($"Energy usage statistics for the user: {user.UserId}\n");
-Console.WriteLine($"Number of invoices analyzed: {user.InvoiceCountAsFloat}");
-Console.WriteLine($"Overall usage for all invoices: {user.UsageListSum:N2} kWh");
-Console.WriteLine($"Number of days covered by all invoices: {user.DaysListSum}");
-Console.WriteLine($"Average daily usage for all invoices: {user.AverageDailyUsage:N2} kWh");
-Console.WriteLine($"Min daily usage recorded for the invoice number {user.MinDayUsageInvoiceNumber}: {statistics.Min:N2} kWh");
-Console.WriteLine($"Max daily usage recorded for the invoice number {user.MaxDayUsageInvoiceNumber}: {statistics.Max:N2} kWh\n");
-Console.WriteLine();
-Console.WriteLine($"How would you rate the ENERGYAPP program on the scale of 1 to 5 ?");
-string score = Console.ReadLine();
-switch (score) 
-{ 
-    case "1": Console.WriteLine("We are very sorry, we will try to highly improve the program\nGOOD BYE\n");
-        break;
-    case "2": Console.WriteLine("We are very sorry, we will try to improve the program\nGOOD BYE\n");
-        break;
-    case "3": Console.WriteLine("Thank you for this rating, we will try to improve the program further\nGOOD BYE\n");
-        break;
-    case "4": Console.WriteLine("Thank you for this rating, we are still aiming to improve the program further\nGOOD BYE\n");
-        break;
-    case "5": Console.WriteLine("Thank you for this rating, we are very happy and still working to improve the program further\nGOOD BYE\n");
-        break;
-    default: Console.WriteLine("Invalid score. Thank you for using the ENERGYAPP program\nGOOD BYE\n");
-        break;
+    Console.WriteLine("\n==============================================================");
+    Console.WriteLine();
+    Console.WriteLine($"Energy usage statistics for the user: {user.UserId}\n");
+    Console.WriteLine($"Number of invoices analyzed: {user.InvoiceCountAsFloat}");
+    Console.WriteLine($"Overall usage for all invoices: {user.UsageListSum:N2} kWh");
+    Console.WriteLine($"Number of days covered by all invoices: {user.DaysListSum}");
+    Console.WriteLine($"Average daily usage for all invoices: {user.AverageDailyUsage:N2} kWh");
+    Console.WriteLine($"Min daily usage recorded for the invoice number {user.MinDayUsageInvoiceNumber}: {statistics.Min:N2} kWh");
+    Console.WriteLine($"Max daily usage recorded for the invoice number {user.MaxDayUsageInvoiceNumber}: {statistics.Max:N2} kWh");
+    Console.WriteLine();
+    Console.WriteLine("==============================================================\n");
+
 }
-Console.WriteLine("===============================================================");

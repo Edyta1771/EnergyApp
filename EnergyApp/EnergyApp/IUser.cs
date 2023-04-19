@@ -2,6 +2,7 @@
 {
     public interface IUser
     {
+
         string UserId { get; }
 
         float InvoiceCountAsFloat { get; }

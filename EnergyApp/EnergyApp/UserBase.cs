@@ -39,12 +39,12 @@
             this.MinDayUsageInvoiceNumber = 0;
             this.MaxDayUsageInvoiceNumber = 0;
         }
+              
 
         public float InvoiceCount(string invoiceCount)
         {
             if (float.TryParse(invoiceCount, out float result) && result >= 1 && result <= 12)
             {
-                Console.WriteLine("Thank you");
                 this.InvoiceCountAsFloat += result;
             }
             else
